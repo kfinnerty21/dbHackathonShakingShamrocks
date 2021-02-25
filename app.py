@@ -28,13 +28,16 @@ def classify():
     )
     return response
 
-@app.route('/service/classify_v2')
+@app.route('/service/classify_v2/')
 def classify_v2():
     data = request.get_json()
+    if data['data']:
 
-    df = pd.read_json(data['data'])
-    cluster_data = cluster_analysis(df)
-    data_return = cluster_data.to_json()
+        df = pd.read_json(data['data'])
+        cluster_data = cluster_analysis(df)
+        data_return = cluster_data.to_json()
+    else:
+        data_return = {"Error"}
     response = app.response_class(
         response=json.dumps(data_return),
         status=200,
