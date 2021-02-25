@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, request
 import json
+import pandas as pd
+from services.clustering import cluster_analysis
 
 app = Flask('hello')
 
@@ -25,6 +27,21 @@ def classify():
         mimetype='application/json'
     )
     return response
+
+@app.route('/service/classify/V2/')
+def classify_v2():
+    data = request.get_json()
+
+    df = pd.read_json(data['data'])
+    cluster_data = cluster_analysis(df)
+    data_return = cluster_data.to_json()
+    response = app.response_class(
+        response=json.dumps(data_return),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 
 
 @app.route('/service/forecast/')
