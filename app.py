@@ -28,7 +28,7 @@ def classify():
     )
     return response
 
-@app.route('/service/classify/V2/')
+@app.route('/service/classify_v2')
 def classify_v2():
     data = request.get_json()
 
