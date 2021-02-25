@@ -6,11 +6,11 @@ app = Flask('hello')
 
 @app.route('/')
 def hello():
-    s = """Hello World!\n
-           Classification service is available on : '/service/classify/' \n
-           Forecasting service is available on : '/service/forecast/'\n
-           Intelligent Saving service is available on : '/service/intelligent/saving/'\n
-           Transaction Rules service is available on : '/service/transactions/rules/'\n
+    s = """Hello World!<br>
+           Classification service is available on : '/service/classify/' <br>
+           Forecasting service is available on : '/service/forecast/'<br>
+           Intelligent Saving service is available on : '/service/intelligent/saving/'<br>
+           Transaction Rules service is available on : '/service/transactions/rules/'<br>
         """
     return s
 

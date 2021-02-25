@@ -1,1 +1,17 @@
-[{"Classified Data": "Mock Data"}]
+[{"Classified Data": [
+  {"transaction_id": 1, "category": "RENT"}, 
+  {"transaction_id": 2, "category": "BILLS"}, 
+  {"transaction_id": 3, "category": "BILLS"}, 
+  {"transaction_id": 4, "category": "OTHER"}, 
+  {"transaction_id": 5, "category": "OTHER"}, 
+  {"transaction_id": 6, "category": "OTHER"}, 
+  {"transaction_id": 7, "category": "RENT"}, 
+  {"transaction_id": 8, "category": "RENT"}, 
+  {"transaction_id": 9, "category": "RENT"}, 
+  {"transaction_id": 10, "category": "RENT"}, 
+  {"transaction_id": 11, "category": "RENT"}, 
+  {"transaction_id": 12, "category": "RENT"}, 
+  {"transaction_id": 13, "category": "RENT"}, 
+  {"transaction_id": 14, "category": "RENT"}, 
+  {"transaction_id": 15, "category": "RENT"}
+]}]
