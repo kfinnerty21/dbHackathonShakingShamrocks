@@ -29,7 +29,7 @@ def classify():
 
 @app.route('/service/forecast/')
 def forecast():
-    with open("./data/mock/forcast.json", 'r') as fp:
+    with open("./data/mock/forecast.json", 'r') as fp:
         data = json.load(fp)
     response = app.response_class(
         response=json.dumps(data),
@@ -41,7 +41,7 @@ def forecast():
 
 @app.route('/service/intelligent/saving/')
 def intelligent_saving():
-    with open("./data/mock/intelligent_rules.json", 'r') as fp:
+    with open("./data/mock/intelligent_saving.json", 'r') as fp:
         data = json.load(fp)
 
     response = app.response_class(
