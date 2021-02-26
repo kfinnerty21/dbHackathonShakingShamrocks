@@ -14,8 +14,7 @@ def convert_to_mins_v3(val):
         return np.nan
 
 def cluster_analysis_v3(df_test):
-    df_test['datetime'] = df_test['dates'].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S"))
-    df_test['time_since_last_transaction'] = df_test['datetime'] - df['datetime'].shift()
+    df_test['time_since_last_transaction'] = df_test['datetime'] - df_test['datetime'].shift()
     df_test['time_since_last_transaction']= df_test['time_since_last_transaction'].apply(lambda x: convert_to_mins(x))
     df_test = df_test.reset_index()
     
