@@ -35,7 +35,115 @@ from django.conf import settings
 
 DATA = settings.BASE_DIR
 
+def find_incommings(df_user):
+    
+    # segment into months
+    df_user['year'] = pd.DatetimeIndex(df_user['dates']).year
+    df_user['month'] = pd.DatetimeIndex(df_user['dates']).month
+    
+    # find average income per month
+    df_in = df_user[df_user['amount']>0]
+    other_account_name = df_in['other_account_name'].unique()
+    
+    # find average gap in payments
+    incomings = {}
+    for payment in other_account_name:
+        
+        df_tmp = df_in[df_in['other_account_name']== payment].copy()
+        df_tmp.sort_values(by='dates', inplace=True)
+        df_tmp.reset_index(inplace=True, drop=True)
+        df_tmp['diff_days'] = pd.to_datetime(df_tmp['dates']).diff().dt.days.fillna(0, downcast='infer')
+        
+        incomings[payment] = {}
+        incomings[payment]['freq'] = math.ceil(df_tmp['diff_days'].mean())
+        incomings[payment]['amount'] = df_tmp['amount'].mean()
+        incomings[payment]['start_date'] = df_tmp['dates'].min()
+           
+    return incomings
 
+
+def find_outgoings(df_user):
+    
+    # segment into months
+    df_user['year'] = pd.DatetimeIndex(df_user['dates']).year
+    df_user['month'] = pd.DatetimeIndex(df_user['dates']).month
+    
+    # find average income per month
+    df_in = df_user[df_user['amount']<0]
+    other_account_name = df_in['other_account_name'].unique()
+        
+    # find average gap in payments
+    outgoings = {}
+    for payment in other_account_name:
+        
+        df_tmp = df_in[df_in['other_account_name']== payment].copy()
+        df_tmp.sort_values(by='dates', inplace=True)
+        df_tmp.reset_index(inplace=True, drop=True)
+        df_tmp['diff_days'] = pd.to_datetime(df_tmp['dates']).diff().dt.days.fillna(0, downcast='infer')
+        
+        outgoings[payment] = {}
+        outgoings[payment]['freq'] = math.ceil(df_tmp['diff_days'].mean())
+        outgoings[payment]['amount'] = df_tmp['amount'].mean()
+        outgoings[payment]['start_date'] = df_tmp['dates'].min()
+        
+        if outgoings[payment]['freq'] > 25:
+            outgoings[payment]['Type'] = 'Regular'
+        
+        if (outgoings[payment]['freq'] >= 7) & (outgoings[payment]['freq'] < 25):
+            outgoings[payment]['Type'] = 'Irregular'
+            
+        if outgoings[payment]['freq'] < 7:
+            outgoings[payment]['Type'] = 'Discretionary'
+           
+    return outgoings
+
+
+def build_predicted_in_out(user, incommings, outgoings, end_date):
+    
+    
+    in_list = []
+    for i in incommings.keys():    
+            
+        df = pd.DataFrame(data={'dates': pd.date_range(incommings[i]['start_date'], end_date, freq='MS')})
+        df['amount_in'] = incommings[i]['amount']
+        in_list.append(df)
+    
+    out_list = []
+    for i in outgoings.keys(): 
+        
+        if outgoings[i]['Type'] == 'Regular':
+        
+            df = pd.DataFrame(data={'dates': pd.date_range(outgoings[i]['start_date'], end_date, freq=str(outgoings[i]['freq'])+'D')})
+            df['amount_out_reg'] = outgoings[i]['amount']
+            out_list.append(df)            
+        
+    df = pd.concat(in_list + out_list)
+    df.reset_index(inplace=True,drop=True)
+    df.sort_values(by='dates', inplace=True)
+    df.reset_index(inplace=True, drop=True)
+    df.fillna(0, inplace=True)
+
+    # bucket into months
+    df['year'] = pd.DatetimeIndex(df['dates']).year
+    df['month'] = pd.DatetimeIndex(df['dates']).month
+    
+    return df
+
+def gt_buffer(row):
+    amount = row['amount']
+    buffer = row['buffer']
+    txn_type = row['Type']
+    other_account_name = row['other_account_name']
+    
+    alert_flag = False
+    if txn_type != 'Regular':
+        if abs(amount) > abs(buffer):
+            #print('Payment of {} to {} exceeds the projected buffer between regular incoming and outgoing payments this month - are you sure?')
+            #alert_dict.update({other_account_name, amount, buffer})
+            alert_flag = True
+            
+    return alert_flag
+    
 
 def reg_pay_id(df):
     """
@@ -122,7 +230,10 @@ def classify(request):
     #    data = json.load(fp)
     df = pd.read_csv('gs://shakingshamrocks_eu/test_data_3_sec.csv')
     df = df.drop(df.columns[0],axis = 1)
+    #df_test = df.loc[df['account_name'] == 'Katherine Valencia']
+    user_profile = UserProfile.objects.get(user=request.user)
 
+    df_test = df.loc[df['account_name'] == user_profile.account_name]
     json_data = df_test.to_json()
     r = requests.post('https://demo-app-lquvhriy2a-ew.a.run.app/service/classify_v2/',  json= {"data":json_data})
     df_results = pd.read_json(r.json())
@@ -135,7 +246,7 @@ def classify(request):
     saving = r.json()
 
     context = {'data': json.dumps(data), 'repay_data': repay_data, 'saving':saving}
-    return render(request, 'classify.html', context)    
+    return render(request, 'classify.html', context)   
 
 @login_required
 def forecast(request):
