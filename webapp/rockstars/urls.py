@@ -35,11 +35,11 @@ urlpatterns = [
     url(r'accounts/', view.accounts),
     url(r'transactions/', view.transactions),
     url(r'alerts/', view.alerts),
-    url(r'^service/classify/', view.classify),
-    url(r'^service/forecast/', view.forecast),
-    url(r'^service/intelligent/saving/', view.saving),
-    url(r'^service/transactions/', view.service_transactions),
-    url(r'^service/transactions/rules/', view.rules),
+    url(r'service/classify/', view.classify),
+    url(r'service/forecast/', view.forecast),
+    url(r'service/intelligent/saving/', view.saving),
+    url(r'service/transactions/', view.service_transactions),
+    url(r'service/transactions/rules/', view.rules),
 
     re_path('login/', auth_views.LoginView.as_view(), {
         'template_name': "registration/login.html"},
