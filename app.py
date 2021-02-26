@@ -4,6 +4,7 @@ import pandas as pd
 from services.clustering import cluster_analysis
 from services.intel_saving import reg_pay_id
 from services.forecasting import forecasting
+from services.clustering_v3 import cluster_analysis_v3
 
 app = Flask('hello')
 
@@ -25,6 +26,24 @@ def classify():
         data = json.load(fp)
     response = app.response_class(
         response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route('/service/classify_v3/', methods=['POST', 'GET'])
+def classify_v2():
+    data = request.get_json()
+    if data['data']:
+
+        df = pd.read_json(data['data'])
+        cluster_data = cluster_analysis_v3(df)
+        data_return = cluster_data.to_json()
+    else:
+        data_return = {"Error"}
+    response = app.response_class(
+        response=json.dumps(data_return),
         status=200,
         mimetype='application/json'
     )
