@@ -122,7 +122,10 @@ def classify(request):
     #    data = json.load(fp)
     df = pd.read_csv('gs://shakingshamrocks_eu/test_data_3_sec.csv')
     df = df.drop(df.columns[0],axis = 1)
+    #df_test = df.loc[df['account_name'] == 'Katherine Valencia']
+    user_profile = UserProfile.objects.get(user=request.user)
 
+    df_test = df.loc[df['account_name'] == user_profile.account_name]
     json_data = df_test.to_json()
     r = requests.post('https://demo-app-lquvhriy2a-ew.a.run.app/service/classify_v2/',  json= {"data":json_data})
     df_results = pd.read_json(r.json())
@@ -135,7 +138,7 @@ def classify(request):
     saving = r.json()
 
     context = {'data': json.dumps(data), 'repay_data': repay_data, 'saving':saving}
-    return render(request, 'classify.html', context)    
+    return render(request, 'classify.html', context)   
 
 @login_required
 def forecast(request):
