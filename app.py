@@ -2,6 +2,7 @@ from flask import Flask, request
 import json
 import pandas as pd
 from services.clustering import cluster_analysis
+from services.intel_saving import reg_pay_id
 
 app = Flask('hello')
 
@@ -28,7 +29,8 @@ def classify():
     )
     return response
 
-@app.route('/service/classify_v2/', methods = ['POST', 'GET'])
+
+@app.route('/service/classify_v2/', methods=['POST', 'GET'])
 def classify_v2():
     data = request.get_json()
     if data['data']:
@@ -44,7 +46,6 @@ def classify_v2():
         mimetype='application/json'
     )
     return response
-
 
 
 @app.route('/service/forecast/')
@@ -66,6 +67,22 @@ def intelligent_saving():
 
     response = app.response_class(
         response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+@app.route('/service/intelligent/saving_v2/', methods=['POST', 'GET'])
+def intelligent_saving():
+    data = request.get_json()
+    if data['data']:
+        df = pd.read_json(data)
+        data_result = reg_pay_id(df)
+    else:
+        data_result = {"Error"}
+
+    response = app.response_class(
+        response=json.dumps(data_result),
         status=200,
         mimetype='application/json'
     )
