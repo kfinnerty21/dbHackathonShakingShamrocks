@@ -73,7 +73,7 @@ def intelligent_saving():
     return response
 
 @app.route('/service/intelligent/saving_v2/', methods=['POST', 'GET'])
-def intelligent_saving():
+def intelligent_saving_v2():
     data = request.get_json()
     if data['data']:
         df = pd.read_json(data)
