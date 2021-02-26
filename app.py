@@ -33,7 +33,7 @@ def classify():
 
 
 @app.route('/service/classify_v3/', methods=['POST', 'GET'])
-def classify_v2():
+def classify_v3():
     data = request.get_json()
     if data['data']:
 
