@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+   <style>
+       label {
+          width: 200px;
+          font-weight: bold;
+       }
+       table, td, tr, th {
+           border: 1px solid #000;
+           padding:5px;
+       }
+   </style>
+   
+{% endblock %}
+{% block container %}
+   <h4>Welcome to DBOI</h4>
+   <hr />
+   <div style="width:650px;float:left;padding:5px;color:black;text-align:justify;margin-right:20px;">
+       <div class="">
+             <label>Account Number: </label> {{user_profile.account_number}}<br />
+             <label>Account Name: </label> {{user_profile.account_name}}<br />
+             <label>Phone: </label> {{user_profile.phone}}<br />
+             <label>Email: </label> {{user_profile.email}}<br />
+             <label>Bank Name: </label> {{user_profile.bank_name}}<br />
+             <label>Branch: </label> {{user_profile.branch}}<br />
+             <label>Cash Balance: </label> {{user_profile.cash_balance}}<br />
+             <label>Carbon Credit Balance: </label> {{user_profile.credit_balance}}<br />
+       </div>
+   </div>
+    <div style="width:450px;float:left;padding:5px;;color:black;">
+            
+      <form action="/accept-bid/{{user_profile.id}}/" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      </form>
+   </div>
+   <br style="clear:both">
+{% endblock %}
+
+   
+
+

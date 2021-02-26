@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+   <style>
+       label {
+          width: 200px;
+          font-weight: bold;
+       }
+       table {
+          border:1px solid #ddd;
+          width:70%;
+       }
+       table tr, td , th{
+          border:1px solid #ddd;
+          padding:5px;
+       } 
+   </style>
+
+{% endblock %}
+{% block container %}
+   <h4>Reports</h4>
+   <div style="padding:5px;color:black;text-align:justify;margin-right:20px;">
+       <div class="">
+           <table>
+                <tr>
+                   <th>Project Name</th>
+                   <th>Category</th>
+                   <th>Region</th>
+                   <th>Amount</th>
+                </tr>
+                {% for x in prjs %}
+                <tr>
+                   <td>{{x.project_name}}</td>
+                   <td>{{x.category}}</td>
+                   <td>{{x.region}}</td>
+                   <td>{{x.amount}}</td>
+                </tr>
+                {% endfor %}
+             </table>
+       </div>
+   </div>
+   <br style="clear:both">"
+{% endblock %}
+
+   
+
+

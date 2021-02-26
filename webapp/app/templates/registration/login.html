@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block head %}
+<style>
+  p {
+     padding:5px;
+     border-bottom: 1px solid lightblue;
+  }
+  label {
+     width:100px;
+  }
+  button {
+     margin-left: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block container %}
+  <h4>Login</h4>
+  <div class="form" style="width:500px;margin:0 auto;min-height:300px;">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <label></label> &nbsp;<button type="submit">Login</button>
+  </form>
+  </div>
+  <br />
+{% endblock %}
