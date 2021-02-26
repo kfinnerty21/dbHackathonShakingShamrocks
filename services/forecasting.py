@@ -134,12 +134,8 @@ def forecasting(df):
     df_join = pd.merge(df,gf_payment_pattern_reg, how = 'left', on = ['year','month'])
     
     df_join['buffer_alert'] = df_join.apply(gt_buffer, axis = 1)
-    print(df_join.head())
-    print(df_join.to_json())
-    
-    df_json = df_join.to_json()
-        
-    return df_json
+            
+    return df_join
     
     
     
