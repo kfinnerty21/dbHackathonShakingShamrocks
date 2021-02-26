@@ -15,7 +15,7 @@ def convert_to_mins_v3(val):
 
 def cluster_analysis_v3(df_test):
     df_test['time_since_last_transaction'] = df_test['datetime'] - df_test['datetime'].shift()
-    df_test['time_since_last_transaction']= df_test['time_since_last_transaction'].apply(lambda x: convert_to_mins(x))
+    df_test['time_since_last_transaction']= df_test['time_since_last_transaction'].apply(lambda x: convert_to_mins_v3(x))
     df_test = df_test.reset_index()
     
     main_dict = {}
@@ -25,7 +25,7 @@ def cluster_analysis_v3(df_test):
         pos_dict = pd.Series(temp_df['time_since_last_trans_party'].values, index = temp_df['index'])
         main_dict.update(pos_dict)
     df_test['time_since_last_transaction_party'] = df_test['index'].map(main_dict)
-    df_test['time_since_last_transaction_party']= df_test['time_since_last_transaction_party'].apply(lambda x: convert_to_mins(x))
+    df_test['time_since_last_transaction_party']= df_test['time_since_last_transaction_party'].apply(lambda x: convert_to_mins_v3(x))
     
     
     numeric_features = ['amount', 'day', 'time_since_last_transaction_party', 'time_since_last_transaction']
